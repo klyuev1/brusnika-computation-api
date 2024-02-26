@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { ValidationPipe } from "./pipes/validation.pipe";
 
 
 async function start() {
@@ -20,7 +21,7 @@ async function start() {
   // const jwtService = new JwtService();
   // const jwtAuthGuard = new JwtAuthGuard(jwtService);
   // app.useGlobalGuards(jwtAuthGuard);
-  // app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe())
 
   await app.listen(PORT, () => console.log(`Server started on port: ${PORT}`));
 

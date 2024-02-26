@@ -10,5 +10,6 @@ export class LoginUserDto {
 
   @ApiProperty({example: '12345', description: 'Пароль пользователя'})
   @IsString({message: 'Должно быть строкой'})
+  @Length(2, 30, {message: 'Не менее 2 и не более 30 символов'})
   readonly password: string;
 }
