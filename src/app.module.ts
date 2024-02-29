@@ -7,6 +7,10 @@ import { ProjectsModule } from './projects/projects.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { FacadesModule } from './facades/facades.module';
 import * as cookieParser from 'cookie-parser';
+import { Facade } from "./facades/facades.model";
+import { FilesModule } from "./files/files.module";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import * as path from "path";
 import { Project } from "./projects/projects.model";
 import { Room } from "./rooms/rooms.model";
 
@@ -24,13 +28,17 @@ import { Room } from "./rooms/rooms.model";
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Project, Room], // User, Role, UserRoles, Post
+      models: [User, Facade, Project, Room], // User, Role, UserRoles, Post
       autoLoadModels: true,
     }),
     UsersModule,
     ProjectsModule,
     RoomsModule,
     FacadesModule,
+    FilesModule,
+    ServeStaticModule.forRoot({
+        rootPath: path.resolve(__dirname, 'static'),
+      }),
   ]
 })
 export class AppModule implements NestModule {
