@@ -28,7 +28,7 @@ import { Room } from "./rooms/rooms.model";
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Facade, Project, Room], // User, Role, UserRoles, Post
+      models: [User, Facade, Project, Room],
       autoLoadModels: true,
     }),
     UsersModule,
