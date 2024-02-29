@@ -21,7 +21,7 @@ export class UsersController {
   }
   
   @ApiOperation({summary: 'Обновление данных о пользователе'})
-  @ApiResponse({status: 200, type: [User]})
+  @ApiResponse({status: 200, type: User})
   @UseGuards(JwtAuthGuard)
   @Patch('me')
   async updateUser(@Req() req: AuthenticatedRequest, @Body() userDto: UpdateUserDto) {
