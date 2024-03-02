@@ -23,6 +23,11 @@ async function start() {
   // app.useGlobalGuards(jwtAuthGuard);
   app.useGlobalPipes(new ValidationPipe())
 
+  app.enableCors({
+    origin: 'http://localhost:3000', // Разрешаем доступ только с этого домена
+    credentials: true, // Разрешаем передачу куки между доменами
+  });
+
   await app.listen(PORT, () => console.log(`Server started on port: ${PORT}`));
 
 }

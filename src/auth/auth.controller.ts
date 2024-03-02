@@ -25,4 +25,11 @@ export class AuthController {
   login(@Body() userDto: LoginUserDto, @Res({passthrough: true}) res: Response): Promise<any> {
     return this.authService.login(userDto, res);
   }
+  
+  @ApiOperation({summary: 'Выход из аккаунта'})
+  @ApiResponse({status: 200, type: 'message'})
+  @Post('/signout')
+  signOut(@Res() res: Response) {
+    res.clearCookie('jwt').send({ message: 'See you soon'})
+  }
 }
