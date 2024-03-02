@@ -1,8 +1,27 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Room } from './rooms.model';
 import { Project } from 'src/projects/projects.model';
 import { CreateRoomDto } from 'src/rooms/dto/create-room.dto';
+import { Response } from 'express';
+import { createObjectCsvWriter } from 'csv-writer';
+import * as path from 'path';
+
+interface ITableItem {
+  tOutside: number;
+  tInside: number;
+  rWall: number;
+  rWindow: number;
+  beta: number;
+  kHousehold: number;
+  number: string;
+  name: string;
+  height: number;
+  width: number;
+  areaWall: number;
+  areaRoom: number;
+  heatLoss: number;
+}
 
 @Injectable()
 export class RoomsService {
@@ -10,10 +29,10 @@ export class RoomsService {
   constructor(
     @InjectModel(Room) private roomRepository: typeof Room,
     @InjectModel(Project) private projectRepository: typeof Project,
-    ) {}
+  ) { }
 
   async getRooms(projectId: number) {
-    const rooms = await this.roomRepository.findAll({where: {projectId}, include: {all: true}});
+    const rooms = await this.roomRepository.findAll({ where: { projectId }, include: { all: true } });
     return rooms;
   }
 
@@ -40,18 +59,18 @@ export class RoomsService {
   async deleteRoom(projectId: number, roomId: number) {
     const room = await this.roomRepository.findOne({ where: { id: roomId, projectId: projectId } });
     if (!room) throw new NotFoundException('Карточка с таким ID не найдена')
-    try { 
+    try {
       await room.destroy();
-      return { message: 'Комната удалена' }; 
+      return { message: 'Комната удалена' };
     }
-    catch(e) { 
+    catch (e) {
       throw new BadRequestException('Не удалось удалить карточку');
     }
   }
 
   private calculateHeatLoss(project: Project, roomDto: CreateRoomDto): number {
     const { tOutside, tInside, rWall, rWindow, beta, kHousehold } = project;
-    const {number, name, height, width, areaWall, areaWindow, areaRoom} = roomDto;
+    const { number, name, height, width, areaWall, areaWindow, areaRoom } = roomDto;
     const kTransferable = 0.3354;
     const kExpenditure = 0.35;
 
@@ -59,9 +78,79 @@ export class RoomsService {
     const heatLossDesignOfWindow = (1 / rWindow) * areaWindow * (tInside - tOutside) * beta;
     const heatLossHousehold = areaRoom * kHousehold;
     const heatLossInfiltration = height * kExpenditure * kTransferable * (tInside - tOutside) * areaRoom;
-    const heatLoss = Math.ceil(heatLossDesignOfWall + heatLossDesignOfWindow + heatLossInfiltration - heatLossHousehold); 
+    const heatLoss = Math.ceil(heatLossDesignOfWall + heatLossDesignOfWindow + heatLossInfiltration - heatLossHousehold);
 
     return heatLoss;
+  }
+
+  async downloadCSV(userId: string, projectId: number, @Res() res: Response) {
+
+    const projects = await this.projectRepository.findAll({ where: { userId }, include: { all: true } });
+    const proj = await this.projectRepository.findOne({ where: { id: projectId } });
+    const rooms = await this.roomRepository.findAll({ where: { projectId }, include: { all: true } });
+
+    if (projects.some(item => item.id === proj.id)) {
+      const { tOutside, tInside, rWall, rWindow, beta, kHousehold } = proj;
+
+      const table: ITableItem[] = [];
+      rooms.map(
+        ({ number, name, height, width, areaWall, areaRoom, heatLoss }) => {
+          table.push({
+            tOutside,
+            tInside,
+            rWall,
+            rWindow,
+            beta,
+            kHousehold,
+            number,
+            name,
+            height,
+            width,
+            areaWall,
+            areaRoom,
+            heatLoss,
+          });
+        });
+
+        await this.downloadRooms(table);
+        const filePath = path.resolve(__dirname, '../../dist/static/output.csv');
+        
+        res.sendFile(filePath, { 
+          headers: {
+            'Content-Disposition': `attachment; filename="output.csv"`,
+            'Content-Type': 'text/csv; charset=utf-8'
+          }
+        });
+      
+
+    }
+    else {
+      throw new NotFoundException('Проект не найден');
+    }
+  }
+
+  private async downloadRooms(data: ITableItem[]) {
+    const csvWriter = await createObjectCsvWriter({
+      path: path.resolve(__dirname, '../../dist/static/output.csv'),
+      header: [
+        { id: 'tOutside', title: 'Температура снаружи' },
+        { id: 'tInside', title: 'Температура внутрь' },
+        { id: 'rWall', title: 'Коэффициент теплопередачи стены' },
+        { id: 'rWindow', title: 'Коэффициент теплопередачи окна' },
+        { id: 'beta', title: 'Коэффициент на сторону света' },
+        { id: 'kHousehold', title: 'Бытовой коэффициент' },
+        { id: 'number', title: 'Номер' },
+        { id: 'name', title: 'Наименование' },
+        { id: 'height', title: 'Высота' },
+        { id: 'width', title: 'Ширина' },
+        { id: 'areaWall', title: 'Площадь оконного проема' },
+        { id: 'areaRoom', title: 'Площадь стены' },
+        { id: 'heatLoss', title: 'Теплопотери' },
+      ],
+      encoding: 'utf8'
+    });
+
+    return csvWriter.writeRecords(data);
   }
 
 }
