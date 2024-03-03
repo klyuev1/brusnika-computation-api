@@ -13,8 +13,6 @@ import { Project } from 'src/projects/projects.model';
     SequelizeModule.forFeature([User, Project]),
     forwardRef(() => AuthModule),
   ],
-  exports: [
-    UsersService
-  ]
+  exports: [UsersService],
 })
 export class UsersModule {}

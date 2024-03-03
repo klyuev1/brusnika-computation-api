@@ -16,13 +16,10 @@ import { RoomsModule } from 'src/rooms/rooms.module';
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'secret',
       signOptions: {
-        expiresIn: '24h'
-      }
-    })
+        expiresIn: '24h',
+      },
+    }),
   ],
-  exports: [
-    AuthService,
-    JwtModule
-  ]
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

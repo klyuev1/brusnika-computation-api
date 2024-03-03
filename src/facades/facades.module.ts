@@ -13,10 +13,8 @@ import { FilesModule } from 'src/files/files.module';
   imports: [
     SequelizeModule.forFeature([Facade]),
     forwardRef(() => AuthModule),
-    FilesModule
+    FilesModule,
   ],
-  exports: [
-    FacadesService
-  ]
+  exports: [FacadesService],
 })
 export class FacadesModule {}

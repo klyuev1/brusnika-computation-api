@@ -1,0 +1,21 @@
+name: Deploy Back-end
+on: push
+jobs: 
+  lint: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Get repositoty code
+        uses: actions/checkout@v3
+      - name: Install dependecies
+        run: npm ci
+      - name: Lint application
+        run: npm run lint
+  build: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Get repositoty code
+        uses: actions/checkout@v3
+      - name: Install dependecies
+        run: npm ci
+      - name: Build application
+        run: npm run build

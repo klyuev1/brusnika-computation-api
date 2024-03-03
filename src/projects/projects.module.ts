@@ -13,6 +13,6 @@ import { Room } from 'src/rooms/rooms.model';
   imports: [
     SequelizeModule.forFeature([User, Project, Room]),
     forwardRef(() => AuthModule),
-  ]
+  ],
 })
 export class ProjectsModule {}

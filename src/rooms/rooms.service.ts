@@ -1,4 +1,10 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+  Res,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Room } from './rooms.model';
 import { Project } from 'src/projects/projects.model';
@@ -25,14 +31,16 @@ interface ITableItem {
 
 @Injectable()
 export class RoomsService {
-
   constructor(
     @InjectModel(Room) private roomRepository: typeof Room,
     @InjectModel(Project) private projectRepository: typeof Project,
-  ) { }
+  ) {}
 
   async getRooms(projectId: number) {
-    const rooms = await this.roomRepository.findAll({ where: { projectId }, include: { all: true } });
+    const rooms = await this.roomRepository.findAll({
+      where: { projectId },
+      include: { all: true },
+    });
     return rooms;
   }
 
@@ -45,9 +53,12 @@ export class RoomsService {
 
       const heatLoss = this.calculateHeatLoss(project, roomDto);
 
-      const createdRoom = await this.roomRepository.create({ ...roomDto, heatLoss, projectId });
+      const createdRoom = await this.roomRepository.create({
+        ...roomDto,
+        heatLoss,
+        projectId,
+      });
       return createdRoom;
-
     } catch (error) {
       if (error.name === 'SequelizeValidationError') {
         throw new BadRequestException('Переданы некорректные данные');
@@ -57,39 +68,56 @@ export class RoomsService {
   }
 
   async deleteRoom(projectId: number, roomId: number) {
-    const room = await this.roomRepository.findOne({ where: { id: roomId, projectId: projectId } });
-    if (!room) throw new NotFoundException('Карточка с таким ID не найдена')
+    const room = await this.roomRepository.findOne({
+      where: { id: roomId, projectId: projectId },
+    });
+    if (!room) throw new NotFoundException('Карточка с таким ID не найдена');
     try {
       await room.destroy();
       return { message: 'Комната удалена' };
-    }
-    catch (e) {
+    } catch (e) {
       throw new BadRequestException('Не удалось удалить карточку');
     }
   }
 
   private calculateHeatLoss(project: Project, roomDto: CreateRoomDto): number {
     const { tOutside, tInside, rWall, rWindow, beta, kHousehold } = project;
-    const { number, name, height, width, areaWall, areaWindow, areaRoom } = roomDto;
+    const { number, name, height, width, areaWall, areaWindow, areaRoom } =
+      roomDto;
     const kTransferable = 0.3354;
     const kExpenditure = 0.35;
 
-    const heatLossDesignOfWall = (1 / rWall) * areaWall * (tInside - tOutside) * beta;
-    const heatLossDesignOfWindow = (1 / rWindow) * areaWindow * (tInside - tOutside) * beta;
+    const heatLossDesignOfWall =
+      (1 / rWall) * areaWall * (tInside - tOutside) * beta;
+    const heatLossDesignOfWindow =
+      (1 / rWindow) * areaWindow * (tInside - tOutside) * beta;
     const heatLossHousehold = areaRoom * kHousehold;
-    const heatLossInfiltration = height * kExpenditure * kTransferable * (tInside - tOutside) * areaRoom;
-    const heatLoss = Math.ceil(heatLossDesignOfWall + heatLossDesignOfWindow + heatLossInfiltration - heatLossHousehold);
+    const heatLossInfiltration =
+      height * kExpenditure * kTransferable * (tInside - tOutside) * areaRoom;
+    const heatLoss = Math.ceil(
+      heatLossDesignOfWall +
+        heatLossDesignOfWindow +
+        heatLossInfiltration -
+        heatLossHousehold,
+    );
 
     return heatLoss;
   }
 
   async downloadCSV(userId: string, projectId: number, @Res() res: Response) {
+    const projects = await this.projectRepository.findAll({
+      where: { userId },
+      include: { all: true },
+    });
+    const proj = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+    const rooms = await this.roomRepository.findAll({
+      where: { projectId },
+      include: { all: true },
+    });
 
-    const projects = await this.projectRepository.findAll({ where: { userId }, include: { all: true } });
-    const proj = await this.projectRepository.findOne({ where: { id: projectId } });
-    const rooms = await this.roomRepository.findAll({ where: { projectId }, include: { all: true } });
-
-    if (projects.some(item => item.id === proj.id)) {
+    if (projects.some((item) => item.id === proj.id)) {
       const { tOutside, tInside, rWall, rWindow, beta, kHousehold } = proj;
 
       const table: ITableItem[] = [];
@@ -110,21 +138,19 @@ export class RoomsService {
             areaRoom,
             heatLoss,
           });
-        });
+        },
+      );
 
-        await this.downloadRooms(table);
-        const filePath = path.resolve(__dirname, '../../dist/static/output.csv');
-        
-        res.sendFile(filePath, { 
-          headers: {
-            'Content-Disposition': `attachment; filename="output.csv"`,
-            'Content-Type': 'text/csv; charset=utf-8'
-          }
-        });
-      
+      await this.downloadRooms(table);
+      const filePath = path.resolve(__dirname, '../../dist/static/output.csv');
 
-    }
-    else {
+      res.sendFile(filePath, {
+        headers: {
+          'Content-Disposition': `attachment; filename="output.csv"`,
+          'Content-Type': 'text/csv; charset=utf-8',
+        },
+      });
+    } else {
       throw new NotFoundException('Проект не найден');
     }
   }
@@ -147,10 +173,9 @@ export class RoomsService {
         { id: 'areaRoom', title: 'Площадь стены' },
         { id: 'heatLoss', title: 'Теплопотери' },
       ],
-      encoding: 'utf8'
+      encoding: 'utf8',
     });
 
     return csvWriter.writeRecords(data);
   }
-
 }
