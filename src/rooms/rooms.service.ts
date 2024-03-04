@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  HttpException,
   Injectable,
   NotFoundException,
   Res,
@@ -82,8 +81,7 @@ export class RoomsService {
 
   private calculateHeatLoss(project: Project, roomDto: CreateRoomDto): number {
     const { tOutside, tInside, rWall, rWindow, beta, kHousehold } = project;
-    const { number, name, height, width, areaWall, areaWindow, areaRoom } =
-      roomDto;
+    const { height, areaWall, areaWindow, areaRoom } = roomDto;
     const kTransferable = 0.3354;
     const kExpenditure = 0.35;
 
