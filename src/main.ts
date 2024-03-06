@@ -22,8 +22,9 @@ async function start() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: 'http://51.250.90.55', // Разрешаем доступ только с этого домена
-    credentials: true, // Разрешаем передачу куки между доменами
+    // origin: 'http://localhost',
+    origin: 'http://51.250.90.55', 
+    credentials: true,
   });
 
   await app.listen(PORT, () => console.log(`Server started on port: ${PORT}`));
