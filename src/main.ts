@@ -22,7 +22,7 @@ async function start() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: 'http://localhost', // Разрешаем доступ только с этого домена
+    origin: ['http://localhost', 'http://51.250.90.55'], // Разрешаем доступ только с этого домена
     credentials: true, // Разрешаем передачу куки между доменами
   });
 
