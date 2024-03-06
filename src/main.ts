@@ -22,8 +22,7 @@ async function start() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: 'http://localhost',
-    // origin: 'http://51.250.90.55',
+    origin: ['http://localhost', 'http://51.250.90.55'],
     credentials: true,
   });
 
