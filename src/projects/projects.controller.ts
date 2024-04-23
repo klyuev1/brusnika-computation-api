@@ -16,7 +16,7 @@ import { Project } from './projects.model';
 import { CreateProjectDto } from './dto/create-project.dto';
 
 @ApiTags('Проекты')
-@Controller('projects')
+@Controller('teplo/projects')
 export class ProjectsController {
   constructor(private projectService: ProjectsService) {}
 

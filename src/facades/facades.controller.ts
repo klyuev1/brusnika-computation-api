@@ -17,7 +17,7 @@ import { createFacadeDto } from './dto/create-facade.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Фасады')
-@Controller('facades')
+@Controller('teplo/facades')
 export class FacadesController {
   constructor(private facadeServise: FacadesService) {}
 

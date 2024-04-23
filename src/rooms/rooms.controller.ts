@@ -17,7 +17,7 @@ import { CreateRoomDto } from 'src/rooms/dto/create-room.dto';
 import { Response } from 'express';
 
 @ApiTags('Комнаты')
-@Controller('projects')
+@Controller('teplo/projects')
 export class RoomsController {
   constructor(private roomsService: RoomsService) {}
 
