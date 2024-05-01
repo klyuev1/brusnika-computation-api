@@ -13,6 +13,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import { Project } from './projects/projects.model';
 import { Room } from './rooms/rooms.model';
+import { CollectionsModule } from './collections/collections.module';
+import { LandscapingProjectsModule } from './landscaping-projects/landscaping-projects.module';
 
 @Module({
   controllers: [],
@@ -39,6 +41,8 @@ import { Room } from './rooms/rooms.model';
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
     }),
+    CollectionsModule,
+    LandscapingProjectsModule,
   ],
 })
 export class AppModule implements NestModule {
