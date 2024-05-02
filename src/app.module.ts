@@ -13,6 +13,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import { Project } from './projects/projects.model';
 import { Room } from './rooms/rooms.model';
+import { RoomFacade } from './rooms/room-facade.model';
 
 @Module({
   controllers: [],
@@ -28,7 +29,7 @@ import { Room } from './rooms/rooms.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Facade, Project, Room],
+      models: [User, Facade, Project, Room, RoomFacade],
       autoLoadModels: true,
     }),
     UsersModule,

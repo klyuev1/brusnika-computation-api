@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -35,9 +37,17 @@ export class RoomsController {
   @Post(':projectId/rooms')
   async createRoom(
     @Param('projectId') projectId: string,
+    // @Param('facadeId') facadeId: string,
+    @Body('facadeIds') facadeIds: string[],
     @Body() roomDto: CreateRoomDto,
+    
+
   ) {
-    return this.roomsService.createRoom(+projectId, roomDto);
+    console.log(facadeIds)
+    if (!facadeIds) {
+      throw new BadRequestException('Список facadeIds не был предоставлен');
+    }
+    return this.roomsService.createRoom(+projectId, facadeIds.map(Number), roomDto);
   }
 
   @ApiOperation({ summary: 'Удаление комнаты' })
@@ -51,16 +61,16 @@ export class RoomsController {
     return this.roomsService.deleteRoom(+projectId, +roomId);
   }
 
-  @ApiOperation({ summary: 'Получение комнат' })
-  @ApiResponse({ status: 200, type: [Room] })
-  @UseGuards(JwtAuthGuard)
-  @Get(':projectId/rooms/download')
-  async download(
-    @Req() req: AuthenticatedRequest,
-    @Param('projectId') projectId: string,
-    @Res() res: Response,
-  ) {
-    const userId = req.user.id;
-    return this.roomsService.downloadCSV(userId, +projectId, res);
-  }
+  // @ApiOperation({ summary: 'Получение комнат' })
+  // @ApiResponse({ status: 200, type: [Room] })
+  // @UseGuards(JwtAuthGuard)
+  // @Get(':projectId/rooms/download')
+  // async download(
+  //   @Req() req: AuthenticatedRequest,
+  //   @Param('projectId') projectId: string,
+  //   @Res() res: Response,
+  // ) {
+  //   const userId = req.user.id;
+  //   return this.roomsService.downloadCSV(userId, +projectId, res);
+  // }
 }

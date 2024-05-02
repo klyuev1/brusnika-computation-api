@@ -5,12 +5,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from 'src/auth/auth.module';
 import { Facade } from './facades.model';
 import { FilesModule } from 'src/files/files.module';
+import { Room } from 'src/rooms/rooms.model';
+import { RoomFacade } from 'src/rooms/room-facade.model';
 
 @Module({
   controllers: [FacadesController],
   providers: [FacadesService],
   imports: [
-    SequelizeModule.forFeature([Facade]),
+    SequelizeModule.forFeature([Facade, Room, RoomFacade]),
     forwardRef(() => AuthModule),
     FilesModule,
   ],

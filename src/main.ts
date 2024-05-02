@@ -19,7 +19,7 @@ async function start() {
   // const jwtService = new JwtService();
   // const jwtAuthGuard = new JwtAuthGuard(jwtService);
   // app.useGlobalGuards(jwtAuthGuard);
-  app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
     origin: ['http://localhost:3000', 'http://51.250.90.55'],

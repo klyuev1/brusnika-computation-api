@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { RoomFacade } from 'src/rooms/room-facade.model';
+import { Room } from 'src/rooms/rooms.model';
 
 interface FacadeCreationAttributes {
   name: string;
@@ -33,18 +35,21 @@ export class Facade extends Model<Facade, FacadeCreationAttributes> {
   link: string;
 
   @ApiProperty({ example: '3000', description: 'Высота фасада в мм' })
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.FLOAT, allowNull: false })
   height: number;
 
   @ApiProperty({ example: '3000', description: 'Длина фасада в мм' })
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.FLOAT, allowNull: false })
   width: number;
 
   @ApiProperty({ example: '2.5', description: 'Площадь стены в м2' })
-  @Column({ type: DataType.INTEGER })
+  @Column({ type: DataType.FLOAT })
   areaWall: number;
 
   @ApiProperty({ example: '2.5', description: 'Площадь стены в м2' })
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.FLOAT, allowNull: false })
   areaWindow: number;
+
+  @BelongsToMany(() => Room, () => RoomFacade)
+  rooms: Room[];
 }
