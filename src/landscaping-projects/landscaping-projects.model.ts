@@ -1,12 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  BelongsTo,
   Column,
   DataType,
-  ForeignKey,
   Model,
   Table,
 } from 'sequelize-typescript';
+
+export interface ProjectElement {
+  name: string
+  B?: number;
+  VMiddle?: number;
+  H?: number;
+  per: number;
+  S: number;
+  rate: number;
+  N: string;
+  Q: number;
+  V: number;
+}
 
 interface LandscapingProjectsCreationAttributes {
   name: string;
@@ -14,41 +25,11 @@ interface LandscapingProjectsCreationAttributes {
   collection: string;
   areaYard: number;
   areaStreet: number;
-  AYLawn: number;
-  AYPerennials:number;
-  AYPerennialsCF: number;
-  AYPerennialsGL: number;
-  AYShrubsStandartD: number;
-  AYShrubsStandartC: number;
-  AYShrubsAccent: number;
-  AYShrubsAM: number;
-  AYShrubsAH: number;
-  AYHedge: number;
-  AYHedgeM: number;
-  AYHedgeH: number;
-  AYHedgeA: number;
-  AYTreesStandartD: number;
-  AYTreesSDS: number;
-  AYTreesSDM: number;
-  AYTreesStandartC: number;
-  AYTreesAccent: number;
-  AYVines: number;
-  AYMoldedTrees: number;
-  ASLawn: number;
-  ASPerennials:number;
-  ASShrubsStandartD: number;
-  ASShrubsStandartC: number;
-  ASShrubsAccent: number;
-  ASHedgeA: number;
-  ASTreesStandartD: number;
-  ASTreesSDS: number;
-  ASTreesSDM: number;
-  ASTreesAccent: number;
-  ASTreesGiant: number;
+  elements: ProjectElement[];
 }
 
 @Table({ tableName: 'landscapingProjects' })
-export class Room extends Model<Room, LandscapingProjectsCreationAttributes> {
+export class LandscapingProject extends Model<LandscapingProject, LandscapingProjectsCreationAttributes> {
   @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
   @Column({
     type: DataType.INTEGER,
@@ -58,49 +39,28 @@ export class Room extends Model<Room, LandscapingProjectsCreationAttributes> {
   })
   id: number;
 
-  @ApiProperty({ example: '1.1.1.1', description: 'Номер помещения' })
-  @Column({ type: DataType.STRING, allowNull: false })
-  number: string;
-
-  @ApiProperty({
-    example: 'Жилая комната',
-    description: 'Наименование помещения',
-  })
+  @ApiProperty({ example: 'ПШЦ 2.1', description: 'Наименование проекта' })
   @Column({ type: DataType.STRING, allowNull: false })
   name: string;
-
-  @ApiProperty({ example: '3.0', description: 'Высота фасадного модуля' })
-  @Column({ type: DataType.FLOAT, allowNull: false })
-  height: number;
-
-  @ApiProperty({ example: '3.45', description: 'Ширина фасадного модуля' })
-  @Column({ type: DataType.FLOAT, allowNull: false })
-  width: number;
-
-  @ApiProperty({ example: '3.45', description: 'Площадь стены' })
-  @Column({ type: DataType.FLOAT, allowNull: false })
-  areaWall: number;
-
-  @ApiProperty({ example: '3.45', description: 'Площадь окна' })
-  @Column({ type: DataType.FLOAT, allowNull: false })
-  areaWindow: number;
-
-  @ApiProperty({ example: '10.0', description: 'Площадь помещения' })
-  @Column({ type: DataType.FLOAT, allowNull: false })
-  areaRoom: number;
-
-  @ApiProperty({ example: 'Номер 1', description: 'Номер фасадного модуля' })
+  
+  @ApiProperty({ example: 'Новосибирск', description: 'Регион' })
   @Column({ type: DataType.STRING, allowNull: false })
-  numberFacade: string;
+  region: string;
 
-  @ApiProperty({ example: '550', description: 'Теплопотери' })
-  @Column({ type: DataType.FLOAT, allowNull: false })
-  heatLoss: number;
+  @ApiProperty({ example: 'Scandinavia', description: 'Наименование коллекции' })
+  @Column({ type: DataType.STRING, allowNull: false })
+  collection: string;
 
-//   @ForeignKey(() => Project)
-//   @Column({ type: DataType.INTEGER })
-//   projectId: number;
+  @ApiProperty({ example: '3.0', description: 'Площадь благоустройства двора' })
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  areaYard: number;
 
-//   @BelongsTo(() => Project)
-//   owner: Project;
+  @ApiProperty({ example: '3.45', description: 'Площадь благоустройства улицы' })
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  areaStreet: number;
+
+  @ApiProperty({ example: 'Газон рулонный', description: 'Элемент озеленения проекта' })
+  @Column({ type:DataType.JSONB, allowNull: false })
+  elements: ProjectElement[];
+
 }
