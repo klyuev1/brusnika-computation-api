@@ -2,14 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 export class CreateRoomDto {
+
+  @ApiProperty({ example: '02', description: 'Этажность' })
+  floor: number;
+  
   @ApiProperty({ example: '1.1.1.1', description: 'Номер помещения' })
   @IsString({ message: 'Должно быть строкой' })
   readonly number: string;
 
-  @ApiProperty({
-    example: 'Жилая комната',
-    description: 'Наименование помещения',
-  })
+  @ApiProperty({ example: 'Жилая комната', description: 'Наименование помещения' })
   @IsString({ message: 'Должно быть строкой' })
   readonly name: string;
 

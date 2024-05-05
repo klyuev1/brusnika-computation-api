@@ -40,7 +40,13 @@ export class RoomsService {
   async getRooms(projectId: number) {
     const rooms = await this.roomRepository.findAll({
       where: { projectId },
-      include: { all: true },
+      // include: [{
+      //   model: Facade,
+      //   as: 'facades',
+      //   through: { attributes: [] } 
+      // }],
+      // ВОТ здесь нужно разобраться с тем, что данные о фасадах не приходят в ответе
+      include: { all: true }
     });
     return rooms;
   }
@@ -66,7 +72,6 @@ export class RoomsService {
         ...roomDto,
         heatLoss: totalHeatLoss,
         projectId,
-        // facadeId,
       });
       return createdRoom;
     } catch (error) {

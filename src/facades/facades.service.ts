@@ -24,6 +24,8 @@ export class FacadesService {
 
     // Проверка входных данных
     const areaWall: number = (height * width) / 1000000 - areaWindow;
+    
+    console.log(areaWall)
     if (areaWall < 0) {
       throw new HttpException(
         'Площадь стены не может быть меньше 0',

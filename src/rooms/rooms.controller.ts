@@ -40,8 +40,6 @@ export class RoomsController {
     // @Param('facadeId') facadeId: string,
     @Body('facadeIds') facadeIds: string[],
     @Body() roomDto: CreateRoomDto,
-    
-
   ) {
     console.log(facadeIds)
     if (!facadeIds) {
