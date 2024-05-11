@@ -24,13 +24,17 @@ interface RoomCreationAttrs {
   heatLoss?: number;
   projectId?: number;
   facadeId?: number;
-
 }
 
 @Table({ tableName: 'rooms' })
 export class Room extends Model<Room, RoomCreationAttrs> {
   @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
-  @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  })
   id: number;
 
   @ApiProperty({ example: '1.1.1.1', description: 'Номер помещения' })
@@ -78,8 +82,7 @@ export class Room extends Model<Room, RoomCreationAttrs> {
 
   @BelongsTo(() => Project)
   owner: Project;
-  
+
   @BelongsToMany(() => Facade, () => RoomFacade)
   facades: Facade[];
-
 }

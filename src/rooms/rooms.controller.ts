@@ -40,14 +40,16 @@ export class RoomsController {
     // @Param('facadeId') facadeId: string,
     @Body('facadeIds') facadeIds: string[],
     @Body() roomDto: CreateRoomDto,
-    
-
   ) {
-    console.log(facadeIds)
+    console.log(facadeIds);
     if (!facadeIds) {
       throw new BadRequestException('Список facadeIds не был предоставлен');
     }
-    return this.roomsService.createRoom(+projectId, facadeIds.map(Number), roomDto);
+    return this.roomsService.createRoom(
+      +projectId,
+      facadeIds.map(Number),
+      roomDto,
+    );
   }
 
   @ApiOperation({ summary: 'Удаление комнаты' })
