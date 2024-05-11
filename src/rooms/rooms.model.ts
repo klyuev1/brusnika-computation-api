@@ -24,6 +24,7 @@ interface RoomCreationAttrs {
   heatLoss?: number;
   projectId?: number;
   facadeId?: number;
+
 }
 
 @Table({ tableName: 'rooms' })
@@ -37,6 +38,10 @@ export class Room extends Model<Room, RoomCreationAttrs> {
   })
   id: number;
 
+  @ApiProperty({ example: '02', description: 'Этажность' })
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  floor: number;
+
   @ApiProperty({ example: '1.1.1.1', description: 'Номер помещения' })
   @Column({ type: DataType.STRING, allowNull: false })
   number: string;
@@ -48,29 +53,9 @@ export class Room extends Model<Room, RoomCreationAttrs> {
   @Column({ type: DataType.STRING, allowNull: false })
   name: string;
 
-  // @ApiProperty({ example: '3.0', description: 'Высота фасадного модуля' })
-  // @Column({ type: DataType.FLOAT, allowNull: false })
-  // height: number;
-
-  // @ApiProperty({ example: '3.45', description: 'Ширина фасадного модуля' })
-  // @Column({ type: DataType.FLOAT, allowNull: false })
-  // width: number;
-
-  // @ApiProperty({ example: '3.45', description: 'Площадь стены' })
-  // @Column({ type: DataType.FLOAT, allowNull: false })
-  // areaWall: number;
-
-  // @ApiProperty({ example: '3.45', description: 'Площадь окна' })
-  // @Column({ type: DataType.FLOAT, allowNull: false })
-  // areaWindow: number;
-
   @ApiProperty({ example: '10.0', description: 'Площадь помещения' })
   @Column({ type: DataType.FLOAT, allowNull: false })
   areaRoom: number;
-
-  // @ApiProperty({ example: 'Номер 1', description: 'Номер фасадного модуля' })
-  // @Column({ type: DataType.STRING, allowNull: false })
-  // numberFacade: string;
 
   @ApiProperty({ example: '550', description: 'Теплопотери' })
   @Column({ type: DataType.FLOAT, allowNull: false })
@@ -82,7 +67,7 @@ export class Room extends Model<Room, RoomCreationAttrs> {
 
   @BelongsTo(() => Project)
   owner: Project;
-
+  
   @BelongsToMany(() => Facade, () => RoomFacade)
   facades: Facade[];
 }
