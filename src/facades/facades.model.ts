@@ -8,6 +8,7 @@ interface FacadeCreationAttributes {
   width: number;
   areaWall: number;
   areaWindow: number;
+  //xoxo
 }
 
 @Table({ tableName: 'facades' })
