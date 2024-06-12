@@ -41,11 +41,15 @@ export class RoomsController {
     @Body('facadeIds') facadeIds: string[],
     @Body() roomDto: CreateRoomDto,
   ) {
-    console.log(facadeIds)
+    console.log(facadeIds);
     if (!facadeIds) {
       throw new BadRequestException('Список facadeIds не был предоставлен');
     }
-    return this.roomsService.createRoom(+projectId, facadeIds.map(Number), roomDto);
+    return this.roomsService.createRoom(
+      +projectId,
+      facadeIds.map(Number),
+      roomDto,
+    );
   }
 
   @ApiOperation({ summary: 'Удаление комнаты' })
@@ -57,6 +61,20 @@ export class RoomsController {
     @Param('roomId') roomId: string,
   ) {
     return this.roomsService.deleteRoom(+projectId, +roomId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':projectId/rooms/duplicateFloor')
+  async duplicateFloor(
+    @Param('projectId') projectId: string,
+    @Body('selectedFloor') selectedFloor: number,
+    @Body('createdFloor') createdFloor: number,
+  ) {
+    return this.roomsService.duplicateFloor(
+      +projectId,
+      selectedFloor,
+      createdFloor,
+    );
   }
 
   // @ApiOperation({ summary: 'Получение комнат' })
