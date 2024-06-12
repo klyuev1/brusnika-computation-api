@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { RoomFacade } from 'src/rooms/room-facade.model';
 import { Room } from 'src/rooms/rooms.model';
 
