@@ -24,6 +24,7 @@ interface RoomCreationAttrs {
   heatLoss?: number;
   projectId?: number;
   facadeId?: number;
+  floor?: number;
 
 }
 

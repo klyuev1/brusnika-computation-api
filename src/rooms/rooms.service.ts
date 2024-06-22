@@ -1,17 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  Res,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Room } from './rooms.model';
-import { Project } from 'src/projects/projects.model';
-import { CreateRoomDto } from 'src/rooms/dto/create-room.dto';
-import { Response } from 'express';
-import { createObjectCsvWriter } from 'csv-writer';
-import * as path from 'path';
-import { Facade } from 'src/facades/facades.model';
+import { BadRequestException, Injectable, NotFoundException, Res } from "@nestjs/common";
+import { InjectModel } from "@nestjs/sequelize";
+import { Room } from "./rooms.model";
+import { Project } from "src/projects/projects.model";
+import { CreateRoomDto } from "src/rooms/dto/create-room.dto";
+import { Response } from "express";
+import { createObjectCsvWriter } from "csv-writer";
+import * as path from "path";
+import { Facade } from "src/facades/facades.model";
+import { Sequelize } from "sequelize-typescript";
 
 interface ITableItem {
   tOutside: number;
@@ -35,54 +31,62 @@ export class RoomsService {
     @InjectModel(Room) private roomRepository: typeof Room,
     @InjectModel(Project) private projectRepository: typeof Project,
     @InjectModel(Facade) private facadeRepository: typeof Facade,
+    private sequelize: Sequelize
   ) {}
 
   async getRooms(projectId: number) {
     const rooms = await this.roomRepository.findAll({
       where: { projectId },
-      // include: [{
-      //   model: Facade,
-      //   as: 'facades',
-      //   through: { attributes: [] }
-      // }],
+      include: [
+        {
+          model: Facade,
+          as: "facades",
+          through: { attributes: [] }
+        }
+      ]
       // ВОТ здесь нужно разобраться с тем, что данные о фасадах не приходят в ответе
-      include: { all: true },
+      // include: { all: true }
     });
     return rooms;
   }
 
-  async createRoom(
-    projectId: number,
-    facadeIds: number[],
-    roomDto: CreateRoomDto,
-  ) {
+  async createRoom(projectId: number, facadeIds: number[], roomDto: CreateRoomDto) {
+    const transaction = await this.sequelize.transaction();
     try {
       const project = await this.projectRepository.findByPk(projectId);
       if (!project) {
-        throw new NotFoundException('Проект не найден');
+        throw new NotFoundException("Проект не найден");
       }
 
       const facades = await this.facadeRepository.findAll({
-        where: { id: facadeIds },
+        where: { id: facadeIds }
       });
-      console.log(facades);
+
       if (facades.length !== facadeIds.length) {
-        throw new NotFoundException('Один или несколько фасадов не найдены');
+        throw new NotFoundException("Один или несколько фасадов не найдены");
       }
 
       const totalHeatLoss = facades.reduce((sum, facade) => {
         return sum + this.calculateHeatLoss(project, facade, roomDto);
       }, 0);
 
-      const createdRoom = await this.roomRepository.create({
-        ...roomDto,
-        heatLoss: totalHeatLoss,
-        projectId,
-      });
+      const createdRoom = await this.roomRepository.create(
+        {
+          ...roomDto,
+          heatLoss: totalHeatLoss,
+          projectId
+        },
+        { transaction }
+      );
+
+      await createdRoom.$set("facades", facadeIds, { transaction });
+
+      await transaction.commit();
       return createdRoom;
     } catch (error) {
-      if (error.name === 'SequelizeValidationError') {
-        throw new BadRequestException('Переданы некорректные данные');
+      await transaction.rollback();
+      if (error.name === "SequelizeValidationError") {
+        throw new BadRequestException("Переданы некорректные данные");
       }
       throw error;
     }
@@ -90,52 +94,66 @@ export class RoomsService {
 
   async deleteRoom(projectId: number, roomId: number) {
     const room = await this.roomRepository.findOne({
-      where: { id: roomId, projectId: projectId },
+      where: { id: roomId, projectId: projectId }
     });
-    if (!room) throw new NotFoundException('Карточка с таким ID не найдена');
+    if (!room) throw new NotFoundException("Карточка с таким ID не найдена");
     try {
       await room.destroy();
-      return { message: 'Комната удалена' };
+      return { message: "Комната удалена" };
     } catch (e) {
-      throw new BadRequestException('Не удалось удалить карточку');
+      throw new BadRequestException("Не удалось удалить карточку");
     }
   }
 
-  async duplicateFloor(
-    projectId: number,
-    selectedFloor: number,
-    createdFloor: number,
-  ) {
+  async duplicateFloor(projectId: number, selectedFloor: number, createdFloor: number) {
     const project = await this.projectRepository.findByPk(projectId);
     if (!project) {
-      throw new NotFoundException('Проект не найден');
+      throw new NotFoundException("Проект не найден");
     }
-    const rooms = await this.roomRepository.findAll({
-      where: { floor: selectedFloor },
-    });
-
     const roomsOnSelectedFloor = await this.roomRepository.findAll({
       where: { projectId, floor: selectedFloor },
+      include: [
+        {
+          model: Facade,
+          as: "facades",
+          through: { attributes: [] }
+        }
+      ]
     });
 
-    // const duplicatedRooms = roomsOnSelectedFloor.map(room => {
-    //   const newRoom = new Room();
-    //   newRoom.project = project;
-    //   newRoom.floor = createdFloor;
-    //   newRoom.name = room.name; // Копируем остальные данные комнаты
-    //   newRoom.area = room.area;
-    //   // Копируйте остальные свойства комнаты, если они есть
-    //   return newRoom;
-    // });
+    if (roomsOnSelectedFloor.length === 0) {
+      throw new NotFoundException("Копирование несуществующего этажа");
+    }
+    const roomsOnCreatedFloor = await this.roomRepository.findOne({ where: { projectId, floor: createdFloor } });
+    if (roomsOnCreatedFloor) {
+      throw new BadRequestException("Такой этаж уже создан");
+    }
+    const duplicatedRooms: Room[] = await Promise.all(
+      roomsOnSelectedFloor.map(async room => {
+        const { id, createdAt, updatedAt, ...rest } = room.toJSON();
 
-    return { rooms, roomsOnSelectedFloor }; // Вместо возвражения комнат, я хочу скопировать их создать новые с createdFloor вместо selectedFloor
+        const newRoomData = {
+          ...rest,
+          floor: createdFloor,
+          projectId: room.projectId,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+
+        const facadeIds: number[] = [];
+
+        newRoomData.facades.forEach(facade => {
+          facadeIds.push(facade.id);
+        });
+
+        const newRoom = await this.createRoom(projectId, facadeIds, newRoomData);
+        return newRoom;
+      })
+    );
+    return duplicatedRooms;
   }
 
-  private calculateHeatLoss(
-    project: Project,
-    facade: Facade,
-    roomDto: CreateRoomDto,
-  ): number {
+  private calculateHeatLoss(project: Project, facade: Facade, roomDto: CreateRoomDto): number {
     const { tOutside, tInside, rWall, rWindow, beta, kHousehold } = project;
     const { height, areaWall, areaWindow } = facade;
 
@@ -143,23 +161,13 @@ export class RoomsService {
     const kTransferable = 0.3354;
     const kExpenditure = 0.35;
 
-    const heatLossDesignOfWall =
-      (1 / rWall) * areaWall * (tInside - tOutside) * beta;
+    const heatLossDesignOfWall = (1 / rWall) * areaWall * (tInside - tOutside) * beta;
     console.log(heatLossDesignOfWall);
-    const heatLossDesignOfWindow =
-      (1 / rWindow) * areaWindow * (tInside - tOutside) * beta;
+    const heatLossDesignOfWindow = (1 / rWindow) * areaWindow * (tInside - tOutside) * beta;
     const heatLossHousehold = areaRoom * kHousehold;
-    const heatLossInfiltration =
-      (height / 1000) *
-      kExpenditure *
-      kTransferable *
-      (tInside - tOutside) *
-      areaRoom;
+    const heatLossInfiltration = (height / 1000) * kExpenditure * kTransferable * (tInside - tOutside) * areaRoom;
     const heatLoss = Math.ceil(
-      heatLossDesignOfWall +
-        heatLossDesignOfWindow +
-        heatLossInfiltration -
-        heatLossHousehold,
+      heatLossDesignOfWall + heatLossDesignOfWindow + heatLossInfiltration - heatLossHousehold
     );
 
     console.log(heatLoss);
