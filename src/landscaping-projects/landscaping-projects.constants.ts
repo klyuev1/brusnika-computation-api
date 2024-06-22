@@ -2,6 +2,7 @@ import { ProjectElement } from "./landscaping-projects.model";
 
 export const projectElements: ProjectElement[] = [
 {
+    parent: "YLawn",
     name: "YLawn",
     VMiddle: 0.1,
     H: 0.1,
@@ -13,15 +14,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
-    name: "YPerennials",
-    per: 0,
-    S: 0,
-    rate: 1,
-    N: "шт/м2",
-    Q: 0,
-    V: 0,
-},
-{
+    parent: "YPerennials",
     name: "YPerennialsCF",
     VMiddle: 0.3,
     H: 0.3,
@@ -33,6 +26,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YPerennials",
     name: "YPerennialsGL",
     VMiddle: 0.1,
     H: 0.1,
@@ -44,6 +38,17 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YPerennials",
+    name: "YPerennials",
+    per: 0,
+    S: 0,
+    rate: 1,
+    N: "шт/м2",
+    Q: 0,
+    V: 0,
+},
+{
+    parent: "YShrubsStandartD",
     name: "YShrubsStandartD",
     VMiddle: 0.5,
     H: 0.5,
@@ -55,6 +60,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YShrubsStandartC",
     name: "YShrubsStandartC",
     VMiddle: 0.4,
     H: 0.4,
@@ -66,15 +72,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
-    name: "YShrubsAccent",
-    per: 0,
-    S: 0,
-    rate: 1,
-    N: "шт",
-    Q: 0,
-    V: 0,
-},
-{
+    parent: "YShrubsAccent",
     name: "YShrubsAM",
     VMiddle: 0.54,
     H: 1.5,
@@ -86,6 +84,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YShrubsAccent",
     name: "YShrubsAH",
     VMiddle: 3.2,
     H: 5,
@@ -97,15 +96,17 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
-    name: "YHedge",
+    parent: "YShrubsAccent",
+    name: "YShrubsAccent",
     per: 0,
     S: 0,
     rate: 1,
-    N: "шт/м2",
+    N: "шт",
     Q: 0,
     V: 0,
 },
 {
+    parent: "YHedge",
     name: "YHedgeM",
     B: 0.6,
     VMiddle: 0.58,
@@ -118,6 +119,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YHedge",
     name: "YHedgeH",
     B: 0.6,
     VMiddle: 1.1,
@@ -130,6 +132,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YHedge",
     name: "YHedgeA",
     VMiddle: 0.8,
     H: 0.8,
@@ -141,15 +144,17 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
-    name: "YTreesStandartD",
+    parent: "YHedge",
+    name: "YHedge",
     per: 0,
     S: 0,
     rate: 1,
-    N: "шт",
+    N: "шт/м2",
     Q: 0,
     V: 0,
 },
 {
+    parent: "YTreesStandartD",
     name: "YTreesSDS",
     VMiddle: 7.5,
     H: 7.5,
@@ -161,6 +166,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YTreesStandartD",
     name: "YTreesSDM",
     VMiddle: 8,
     H: 7.5,
@@ -172,6 +178,17 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YTreesStandartD",
+    name: "YTreesStandartD",
+    per: 0,
+    S: 0,
+    rate: 1,
+    N: "шт",
+    Q: 0,
+    V: 0,
+},
+{
+    parent: "YTreesStandartC",
     name: "YTreesStandartC",
     VMiddle: 8,
     H: 6,
@@ -183,6 +200,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YTreesAccent",
     name: "YTreesAccent",
     VMiddle: 30,
     H: 10,
@@ -194,6 +212,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YVines",
     name: "YVines",
     VMiddle: 0.3,
     H: 3,
@@ -205,6 +224,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "YMoldedTrees",
     name: "YMoldedTrees",
     VMiddle: 10,
     H: 7.5,
@@ -217,6 +237,7 @@ export const projectElements: ProjectElement[] = [
 },
 
 {
+    parent: "SLawn",
     name: "SLawn",
     VMiddle: 0.1,
     H: 0.1,
@@ -228,6 +249,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "SPerennials",
     name: "SPerennials",
     VMiddle: 0.3,
     H: 0.3,
@@ -239,6 +261,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "SShrubsStandartD",
     name: "SShrubsStandartD",
     VMiddle: 0.5,
     H: 0.5,
@@ -250,6 +273,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "SShrubsStandartC",
     name: "SShrubsStandartC",
     VMiddle: 0.4,
     H: 0.4,
@@ -261,6 +285,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "SShrubsAccent",
     name: "SShrubsAccent",
     VMiddle: 1,
     H: 1,
@@ -272,6 +297,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "SHedgeA",
     name: "SHedgeA",
     VMiddle: 0.8,
     H: 0.8,
@@ -283,15 +309,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
-    name: "STreesStandartD",
-    per: 0,
-    S: 0,
-    rate: 1,
-    N: "шт",
-    Q: 0,
-    V: 0,
-},
-{
+    parent: "STreesStandartD",
     name: "STreesSDS",
     VMiddle: 7.5,
     H: 7.5,
@@ -303,6 +321,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "STreesStandartD",
     name: "STreesSDM",
     VMiddle: 8,
     H: 7.5,
@@ -314,6 +333,17 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "STreesStandartD",
+    name: "STreesStandartD",
+    per: 0,
+    S: 0,
+    rate: 1,
+    N: "шт",
+    Q: 0,
+    V: 0,
+},
+{
+    parent: "STreesAccent",
     name: "STreesAccent",
     VMiddle: 30,
     H: 10,
@@ -325,6 +355,7 @@ export const projectElements: ProjectElement[] = [
     V: 0,
 },
 {
+    parent: "STreesGiant",
     name: "STreesGiant",
     VMiddle: 50,
     H: 12,

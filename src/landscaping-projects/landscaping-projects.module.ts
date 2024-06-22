@@ -2,9 +2,9 @@ import { Module, forwardRef } from '@nestjs/common';
 import { LandscapingProjectsService } from './landscaping-projects.service';
 import { LandscapingProjectsController } from './landscaping-projects.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { LandscapingProject } from './landscaping-projects.model';
-import { Collection } from 'src/collections/collections.model';
+import { Collection } from '../collections/collections.model';
 
 @Module({
   providers: [LandscapingProjectsService],

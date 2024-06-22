@@ -6,12 +6,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/users.model';
-import { UsersService } from 'src/users/users.service';
+import { User } from '../users/users.model';
+import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
+import { LoginUserDto } from '../users/dto/login-user.dto';
 import { Response } from 'express';
-import { RegistationUserDto } from 'src/users/dto/registation-user.dto';
+import { RegistationUserDto } from '../users/dto/registation-user.dto';
 
 @Injectable()
 export class AuthService {

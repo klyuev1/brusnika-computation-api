@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { LandscapingProject, ProjectElement } from './landscaping-projects.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { createProjectDto } from './dto/create-project.dto';
-import { Collection } from 'src/collections/collections.model';
+import { Collection } from '../collections/collections.model';
 import { projectElements } from './landscaping-projects.constants';
 @Injectable()
 export class LandscapingProjectsService {
@@ -19,6 +19,7 @@ export class LandscapingProjectsService {
     }
 
     async createProject(dto: createProjectDto) {
+
         const {name, region, collection, areaYard, areaStreet} = dto
 
         const generalVolumeYard = 0.35 * areaYard
@@ -43,6 +44,13 @@ export class LandscapingProjectsService {
                 else {
                     throw new ForbiddenException('Что-то не так с базой данных'); 
                 }
+
+                if (name === element.parent) {
+                  summary = volume/element.H;
+                }
+                // if (name !== element.parent){
+                //   summary += 
+                // }
 
                 // if (element.H === undefined) {
                 // }

@@ -7,7 +7,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Project } from 'src/projects/projects.model';
+import { Project } from '../projects/projects.model';
 
 interface RoomCreationAttrs {
   number: string;

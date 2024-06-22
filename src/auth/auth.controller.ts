@@ -1,9 +1,9 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/users/users.model';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { RegistationUserDto } from 'src/users/dto/registation-user.dto';
+import { User } from '../users/users.model';
+import { LoginUserDto } from '../users/dto/login-user.dto';
+import { RegistationUserDto } from '../users/dto/registation-user.dto';
 import { Response } from 'express';
 
 @ApiTags('Авторизация')

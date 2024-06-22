@@ -12,7 +12,7 @@ import {
 import { FacadesService } from './facades.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Facade } from './facades.model';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { createFacadeDto } from './dto/create-facade.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 

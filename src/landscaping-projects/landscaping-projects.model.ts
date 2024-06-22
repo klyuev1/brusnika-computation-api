@@ -7,7 +7,8 @@ import {
 } from 'sequelize-typescript';
 
 export interface ProjectElement {
-  name: string
+  parent: string;
+  name: string;
   B?: number;
   VMiddle?: number;
   H?: number;

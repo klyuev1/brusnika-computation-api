@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Room } from './rooms.model';
-import { Project } from 'src/projects/projects.model';
-import { CreateRoomDto } from 'src/rooms/dto/create-room.dto';
+import { Project } from '../projects/projects.model';
+import { CreateRoomDto } from '../rooms/dto/create-room.dto';
 import { Response } from 'express';
 import { createObjectCsvWriter } from 'csv-writer';
 import * as path from 'path';

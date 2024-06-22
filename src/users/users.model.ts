@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
-import { Project } from 'src/projects/projects.model';
+import { Project } from '../projects/projects.model';
 
 interface UserCreationAttrs {
   email: string;

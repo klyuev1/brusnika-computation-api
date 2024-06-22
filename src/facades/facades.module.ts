@@ -2,9 +2,9 @@ import { Module, forwardRef } from '@nestjs/common';
 import { FacadesController } from './facades.controller';
 import { FacadesService } from './facades.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { Facade } from './facades.model';
-import { FilesModule } from 'src/files/files.module';
+import { FilesModule } from '../files/files.module';
 
 @Module({
   controllers: [FacadesController],

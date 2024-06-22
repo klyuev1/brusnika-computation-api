@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
 import { Collection } from './collections.model';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { createCollectionDto } from './dto/create-collection.dto';
 
 @ApiTags('Коллекции')

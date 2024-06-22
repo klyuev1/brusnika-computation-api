@@ -12,8 +12,8 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RoomsService } from './rooms.service';
 import { Room } from './rooms.model';
-import { AuthenticatedRequest, JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateRoomDto } from 'src/rooms/dto/create-room.dto';
+import { AuthenticatedRequest, JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CreateRoomDto } from '../rooms/dto/create-room.dto';
 import { Response } from 'express';
 
 @ApiTags('Комнаты')

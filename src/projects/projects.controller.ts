@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedRequest, JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthenticatedRequest, JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Project } from './projects.model';
 import { CreateProjectDto } from './dto/create-project.dto';
 
