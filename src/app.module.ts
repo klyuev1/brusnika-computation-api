@@ -15,6 +15,8 @@ import { Project } from './projects/projects.model';
 import { Room } from './rooms/rooms.model';
 import { CollectionsModule } from './collections/collections.module';
 import { LandscapingProjectsModule } from './landscaping-projects/landscaping-projects.module';
+import { Collection } from './collections/collections.model';
+import { LandscapingProject } from './landscaping-projects/landscaping-projects.model';
 
 @Module({
   controllers: [],
@@ -30,7 +32,7 @@ import { LandscapingProjectsModule } from './landscaping-projects/landscaping-pr
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Facade, Project, Room],
+      models: [User, Facade, Project, Room, Collection, LandscapingProject],
       autoLoadModels: true,
     }),
     UsersModule,
@@ -38,11 +40,11 @@ import { LandscapingProjectsModule } from './landscaping-projects/landscaping-pr
     RoomsModule,
     FacadesModule,
     FilesModule,
+    CollectionsModule,
+    LandscapingProjectsModule,
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
     }),
-    CollectionsModule,
-    LandscapingProjectsModule,
   ],
 })
 export class AppModule implements NestModule {

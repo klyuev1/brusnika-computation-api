@@ -26,7 +26,7 @@ export class CollectionsController {
       return this.collectionServise.createCollection(collectionDto);
     }
 
-    @ApiOperation({ summary: 'Создание новой коллекции' })
+    @ApiOperation({ summary: 'Изменение коллекции' })
     @ApiResponse({ status: 200, type: Collection })
     @UseGuards(JwtAuthGuard)
     @Patch(':collectionId')
@@ -37,7 +37,7 @@ export class CollectionsController {
       return this.collectionServise.updateCollection(+collectionId, collectionDto);
     }
 
-    @ApiOperation({ summary: 'Создание пользователя' })
+    @ApiOperation({ summary: 'Удаление коллекции' })
     @ApiResponse({ status: 200, type: Collection })
     @UseGuards(JwtAuthGuard)
     @Delete('/:collectionId')
