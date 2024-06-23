@@ -13,8 +13,8 @@ export class createFacadeDto {
   @ApiProperty({ example: '3000', description: 'Длина фасада в мм' })
   readonly width: number;
 
-  @ApiProperty({ example: '2.5', description: 'Площадь стены в м2' })
-  readonly areaWall: number;
+  // @ApiProperty({ example: '2.5', description: 'Площадь стены в м2' })
+  // readonly areaWall: number;
 
   @ApiProperty({ example: '2.5', description: 'Площадь стены в м2' })
   readonly areaWindow: number;

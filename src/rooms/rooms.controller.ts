@@ -1,66 +1,81 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
   Post,
+  Query,
   Req,
   Res,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RoomsService } from './rooms.service';
-import { Room } from './rooms.model';
-import { AuthenticatedRequest, JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CreateRoomDto } from '../rooms/dto/create-room.dto';
-import { Response } from 'express';
+  UseGuards
+} from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { RoomsService } from "./rooms.service";
+import { Room } from "./rooms.model";
+import { AuthenticatedRequest, JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { CreateRoomDto } from "../rooms/dto/create-room.dto";
+import { Response } from "express";
 
-@ApiTags('Комнаты')
-@Controller('teplo/projects')
+@ApiTags("Комнаты")
+@Controller("teplo/projects")
 export class RoomsController {
   constructor(private roomsService: RoomsService) {}
 
-  @ApiOperation({ summary: 'Получение комнат' })
+  @ApiOperation({ summary: "Получение комнат" })
   @ApiResponse({ status: 200, type: [Room] })
-  @UseGuards(JwtAuthGuard)
-  @Get(':projectId/rooms')
-  async getRooms(@Param('projectId') projectId: string) {
+  // @UseGuards(JwtAuthGuard)
+  @Get(":projectId/rooms")
+  async getRooms(@Param("projectId") projectId: string): Promise<Room[]> {
     return this.roomsService.getRooms(+projectId);
   }
 
-  @ApiOperation({ summary: 'Создание комнаты' })
+  @ApiOperation({ summary: "Создание комнаты" })
   @ApiResponse({ status: 201, type: Room })
   @UseGuards(JwtAuthGuard)
-  @Post(':projectId/rooms')
+  @Post(":projectId/rooms")
   async createRoom(
-    @Param('projectId') projectId: string,
-    @Body() roomDto: CreateRoomDto,
+    @Param("projectId") projectId: string,
+    // @Param('facadeId') facadeId: string,
+    @Body("facadeIds") facadeIds: string[],
+    @Body() roomDto: CreateRoomDto
   ) {
-    return this.roomsService.createRoom(+projectId, roomDto);
+    console.log(facadeIds);
+    if (!facadeIds) {
+      throw new BadRequestException("Список facadeIds не был предоставлен");
+    }
+    return this.roomsService.createRoom(+projectId, facadeIds.map(Number), roomDto);
   }
 
-  @ApiOperation({ summary: 'Удаление комнаты' })
-  @ApiResponse({ status: 200, type: 'message' })
+  @ApiOperation({ summary: "Удаление комнаты" })
+  @ApiResponse({ status: 200, type: "message" })
   @UseGuards(JwtAuthGuard)
-  @Delete(':projectId/rooms/:roomId')
-  async deleteProject(
-    @Param('projectId') projectId: string,
-    @Param('roomId') roomId: string,
-  ) {
+  @Delete(":projectId/rooms/:roomId")
+  async deleteProject(@Param("projectId") projectId: string, @Param("roomId") roomId: string) {
     return this.roomsService.deleteRoom(+projectId, +roomId);
   }
 
-  @ApiOperation({ summary: 'Получение комнат' })
-  @ApiResponse({ status: 200, type: [Room] })
-  @UseGuards(JwtAuthGuard)
-  @Get(':projectId/rooms/download')
-  async download(
-    @Req() req: AuthenticatedRequest,
-    @Param('projectId') projectId: string,
-    @Res() res: Response,
+  // @UseGuards(JwtAuthGuard)
+  @Post(":projectId/rooms/duplicateFloor")
+  async duplicateFloor(
+    @Param("projectId") projectId: string,
+    @Body("selectedFloor") selectedFloor: number,
+    @Body("createdFloor") createdFloor: number
   ) {
-    const userId = req.user.id;
-    return this.roomsService.downloadCSV(userId, +projectId, res);
+    return this.roomsService.duplicateFloor(+projectId, selectedFloor, createdFloor);
   }
+
+  // @ApiOperation({ summary: 'Получение комнат' })
+  // @ApiResponse({ status: 200, type: [Room] })
+  // @UseGuards(JwtAuthGuard)
+  // @Get(':projectId/rooms/download')
+  // async download(
+  //   @Req() req: AuthenticatedRequest,
+  //   @Param('projectId') projectId: string,
+  //   @Res() res: Response,
+  // ) {
+  //   const userId = req.user.id;
+  //   return this.roomsService.downloadCSV(userId, +projectId, res);
+  // }
 }
