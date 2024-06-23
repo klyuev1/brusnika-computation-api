@@ -66,7 +66,7 @@ export class AuthService {
   }
 
   private async setCookie(res: Response, user: User) {
-    const payload = { id: user.id };
+    const payload = { id: user.id, roles: user.roles };
     const token = this.jwtService.sign(payload);
     res.cookie('jwt', token);
   }

@@ -15,6 +15,8 @@ import { Facade } from './facades.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { createFacadeDto } from './dto/create-facade.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @ApiTags('Фасады')
 @Controller('teplo/facades')
@@ -31,7 +33,8 @@ export class FacadesController {
 
   @ApiOperation({ summary: 'Создание пользователя' })
   @ApiResponse({ status: 200, type: Facade })
-  @UseGuards(JwtAuthGuard)
+  @Roles("admin")
+  @UseGuards(RolesGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(@Body() facadeDto: createFacadeDto, @UploadedFile() image) {
@@ -40,7 +43,8 @@ export class FacadesController {
 
   @ApiOperation({ summary: 'Создание пользователя' })
   @ApiResponse({ status: 200, type: Facade })
-  @UseGuards(JwtAuthGuard)
+  @Roles("admin")
+  @UseGuards(RolesGuard)
   @Delete('/:value')
   delete(@Param('value') value: string) {
     return this.facadeServise.deleteFacade(+value);

@@ -1,10 +1,11 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
-import { JwtModule } from '@nestjs/jwt';
-import { ProjectsModule } from 'src/projects/projects.module';
-import { RoomsModule } from 'src/rooms/rooms.module';
+import { Module, forwardRef } from "@nestjs/common";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
+import { UsersModule } from "src/users/users.module";
+import { JwtModule } from "@nestjs/jwt";
+import { ProjectsModule } from "src/projects/projects.module";
+import { RoomsModule } from "src/rooms/rooms.module";
+import { RolesModule } from "src/roles/roles.module";
 
 @Module({
   controllers: [AuthController],
@@ -13,13 +14,14 @@ import { RoomsModule } from 'src/rooms/rooms.module';
     forwardRef(() => UsersModule),
     forwardRef(() => ProjectsModule),
     forwardRef(() => RoomsModule),
+    forwardRef(() => RolesModule),
     JwtModule.register({
-      secret: process.env.PRIVATE_KEY || 'secret',
+      secret: process.env.PRIVATE_KEY || "secret",
       signOptions: {
-        expiresIn: '24h',
-      },
-    }),
+        expiresIn: "24h"
+      }
+    })
   ],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule]
 })
 export class AuthModule {}
